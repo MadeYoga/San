@@ -142,7 +142,7 @@ public class ModCommandListener extends ListenerAdapter {
 
         else if (command[0].equals(prefix + "c_text")){
             if (command.length < 2) {
-                event.getChannel().sendMessage("usage: "+prefix+"c_text new_text_channel\ncreating new text channel named new_text_channel").queue();
+                event.getChannel().sendMessage("usage: "+prefix+"c_text new_text_channel\ncreates new text channel named new_text_channel").queue();
                 return;
             }
             if (!author.hasPermission(Permission.MANAGE_CHANNEL)){
@@ -160,7 +160,7 @@ public class ModCommandListener extends ListenerAdapter {
 
         else if (command[0].equals(prefix + "c_category")){
             if (command.length < 2) {
-                event.getChannel().sendMessage("usage: " + prefix + "c_category new_category\ncreating new category named new_category").queue();
+                event.getChannel().sendMessage("usage: " + prefix + "c_category new_category\ncreates new category named new_category").queue();
                 return;
             }
             if (!author.hasPermission(Permission.MANAGE_CHANNEL)) {
@@ -175,7 +175,7 @@ public class ModCommandListener extends ListenerAdapter {
 
         else if (command[0].equals(prefix + "c_voice")){
             if (command.length < 2) {
-                event.getChannel().sendMessage("usage: "+prefix+"c_voice new_voice\ncreating new voice channel named new_voice").queue();
+                event.getChannel().sendMessage("usage: "+prefix+"c_voice new_voice\ncreates new voice channel named new_voice").queue();
                 return;
             }
             if (!author.hasPermission(Permission.MANAGE_CHANNEL)){

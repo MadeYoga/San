@@ -42,21 +42,16 @@ public class MusicCommandListener extends ListenerAdapter {
     // SERVERS HASH
     Map<String, ServerVoiceState> voice_states;
 
-    public MusicCommandListener(){
+    public MusicCommandListener()
+    {
         voice_states = new HashMap<String, ServerVoiceState>();
-//        try {
-////            // String pattern = "dd-MM-yyyy";
-////            // SimpleDateFormat format = new SimpleDateFormat(pattern);
-////            // String date = format.format(new Date());
-////            // System.setOut(new PrintStream(new File(date+"output-file.txt")));
-////        } catch (Exception e) {
-////            e.printStackTrace();
-////        }
     }
 
-    public ServerVoiceState get_voice_state(MessageReceivedEvent event){
+    public ServerVoiceState get_voice_state(MessageReceivedEvent event)
+    {
         ServerVoiceState state = voice_states.get(event.getGuild().getId());
-        if (state == null){
+        if (state == null)
+        {
             AudioManager audioManager = event.getGuild().getAudioManager();
             state = new ServerVoiceState(audioManager, event.getGuild(), event.getChannel());
             voice_states.put(event.getGuild().getId(), state);
@@ -116,7 +111,8 @@ public class MusicCommandListener extends ListenerAdapter {
 
             if (command.length < 2) return; // handle null
 
-            if (command[1].startsWith("https://www.youtu")){
+            if (command[1].startsWith("https://www.youtu"))
+            {
                 LoadAndPlay(event, command[1]);
                 return;
             }
@@ -145,7 +141,6 @@ public class MusicCommandListener extends ListenerAdapter {
                 if (index > state.entry_limit) continue;
                 LoadAndPlay(event, index - 1); // -1 bcs index videos starts from 0
             }
-
         }
 
         else if (command[0].equals(prefix+"volume"))
@@ -165,7 +160,6 @@ public class MusicCommandListener extends ListenerAdapter {
 
         else if (command[0].equals(prefix+"s") || command[0].equals(prefix+"search"))
         {
-
             System.out.println("Search: " + msg_content + ", server: " + event.getGuild().getName() );
             state.videos = new YTVideo[state.entry_limit];
 
@@ -185,7 +179,6 @@ public class MusicCommandListener extends ListenerAdapter {
                 ResourceId rId = singleVideo.getId();
                 if (rId.getKind().equals("youtube#video"))
                 {
-
                     state.videos[index] = new YTVideo();
 
                     Thumbnail thumbnail = singleVideo.getSnippet().getThumbnails().getDefault();
@@ -197,7 +190,6 @@ public class MusicCommandListener extends ListenerAdapter {
                     // embed.addField(String.valueOf(index + 1) + ". " + state.videos[index].title, state.videos[index].url, false);
 
                     index++;
-
                 }
             }
 
@@ -211,7 +203,6 @@ public class MusicCommandListener extends ListenerAdapter {
             embed.setFooter("use " + prefix + "p (entry number) to pick a song to play", null);
             MessageChannel channel = event.getChannel();
             channel.sendMessage(embed.build()).queue();
-
         }
 
         else if (command[0].equals(prefix+"p"))
@@ -270,12 +261,16 @@ public class MusicCommandListener extends ListenerAdapter {
             channel.sendMessage(embed.build()).queue();
         }
 
-        else if (command[0].equals(prefix+"repeat")){
+        else if (command[0].equals(prefix+"repeat"))
+        {
             MessageChannel channel = event.getChannel();
-            if (state.getTrackScheduler().repeat) {
+            if (state.getTrackScheduler().repeat)
+            {
                 state.getTrackScheduler().repeat = false;
                 channel.sendMessage("Repeat: off").queue();
-            } else {
+            }
+            else
+            {
                 state.getTrackScheduler().repeat = true;
                 channel.sendMessage("Repeat: on").queue();
             }
@@ -295,59 +290,7 @@ public class MusicCommandListener extends ListenerAdapter {
                 event.getChannel().sendMessage("queue is empty").queue();
                 return;
             }
-            EmbedBuilder embed = new EmbedBuilder();
-            embed.setTitle("**" + event.getGuild().getName() + "**");
-            embed.setDescription("Prefix: **" + prefix + "**, search_limit: **" + state.entry_limit + "**");
-            if (nowPlaying.picked_from_list)
-                embed.setThumbnail(nowPlaying.video.thumbnail_url);
-            embed.setColor(Color.pink);
-
-            // ADDS QUEUE VALUE TO EMBED
-            int count = 1;
-            String queue_values = "";
-            for (VoiceEntry entry : list)
-            {
-//                embed.addField(
-//                        String.valueOf(count) +". "+ entry.track.getInfo().title + "["+getMinuteFormat(entry.track.getDuration())+"]",
-//                        "Requested by " + entry.requester,
-//                        false
-//                );
-                queue_values += String.valueOf(count) +". **"+ entry.track.getInfo().title + " ["+getMinuteFormat(entry.track.getDuration())+"]**\n";
-                queue_values += "Requested by " + entry.requester + "\n";
-
-                count+=1;
-                if (count == 25) break;
-            }
-            embed.addField(
-                    ":notes: **Queues**",
-                    queue_values,
-                    false
-                    );
-
-            if (state.getTrackScheduler().repeat) {
-                embed.addField(
-                        ":repeat: **Repeat**",
-                        "ON",
-                        true
-                );
-            } else {
-                embed.addField(
-                        ":repeat: **Repeat**",
-                        "OFF",
-                        true
-                );
-            }
-
-            embed.addField(":speaker: **Volume**", String.valueOf(state.getPlayer().getVolume()) + "%", true);
-            embed.addField(
-                    ":musical_note: **Now Playing**",
-                    "**" + nowPlaying.track.getInfo().title + " [" + getMinuteFormat(nowPlaying.track.getPosition()) + "/" + getMinuteFormat(nowPlaying.track.getDuration()) + "]**\nRequested by **" + nowPlaying.requester + "**",
-                    false
-            );
-            embed.setFooter(
-                    "Only requester can skip current playing song",
-                    event.getGuild().getSelfMember().getUser().getAvatarUrl()
-            );
+            EmbedBuilder embed = getEmbeddedQueue(event, prefix, state, nowPlaying, list);
             MessageChannel channel = event.getChannel();
             channel.sendMessage(embed.build()).queue();
         }
@@ -465,10 +408,72 @@ public class MusicCommandListener extends ListenerAdapter {
 
     }
 
-    public boolean isNumeric(String content){
-        for (char character : content.toCharArray()){
+    public EmbedBuilder getEmbeddedQueue
+            (
+            MessageReceivedEvent event,
+            String prefix,
+            ServerVoiceState state,
+            VoiceEntry nowPlaying,
+            VoiceEntry[] list
+            )
+    {
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.setTitle("**" + event.getGuild().getName() + "**");
+        embed.setDescription("Prefix: **" + prefix + "**, search_limit: **" + state.entry_limit + "**");
+        if (nowPlaying.picked_from_list)
+            embed.setThumbnail(nowPlaying.video.thumbnail_url);
+        embed.setColor(Color.pink);
+
+        // ADDS QUEUE VALUE TO EMBED
+        int count = 1;
+        String queue_values = "";
+        for (VoiceEntry entry : list)
+        {
+            queue_values += String.valueOf(count) +". **"+ entry.track.getInfo().title + " ["+getMinuteFormat(entry.track.getDuration())+"]**\n";
+            queue_values += "Requested by " + entry.requester + "\n";
+            count+=1;
+            if (count == 25) break;
+        }
+        embed.addField(
+                ":notes: **Queues**",
+                queue_values,
+                false
+        );
+
+        if (state.getTrackScheduler().repeat) {
+            embed.addField(
+                    ":repeat: **Repeat**",
+                    "ON",
+                    true
+            );
+        } else {
+            embed.addField(
+                    ":repeat: **Repeat**",
+                    "OFF",
+                    true
+            );
+        }
+
+        embed.addField(":speaker: **Volume**", String.valueOf(state.getPlayer().getVolume()) + "%", true);
+        embed.addField(
+                ":musical_note: **Now Playing**",
+                "**" + nowPlaying.track.getInfo().title + " [" + getMinuteFormat(nowPlaying.track.getPosition()) + "/" + getMinuteFormat(nowPlaying.track.getDuration()) + "]**\nRequested by **" + nowPlaying.requester + "**",
+                false
+        );
+        embed.setFooter(
+                "Only requester can skip current playing song",
+                event.getGuild().getSelfMember().getUser().getAvatarUrl()
+        );
+        return embed;
+    }
+
+    public boolean isNumeric(String content)
+    {
+        for (char character : content.toCharArray())
+        {
             if (character == ' ') continue;
-            if (!Character.isDigit(character)) {
+            if (!Character.isDigit(character))
+            {
                 System.out.println("Character not number: " + character);
                 return false;
             }
@@ -476,7 +481,8 @@ public class MusicCommandListener extends ListenerAdapter {
         return true;
     }
 
-    public String getMinuteFormat(long duration_millis){
+    public String getMinuteFormat(long duration_millis)
+    {
         String duration_minute = String.valueOf( (int)(duration_millis/1000)/60 );
         String duration_second = String.valueOf( (int)(duration_millis/1000)%60 );
         if (duration_minute.length() == 1) duration_minute = "0" + duration_minute;
@@ -485,7 +491,8 @@ public class MusicCommandListener extends ListenerAdapter {
         return result;
     }
 
-    public Iterator<SearchResult> YouTubeSearch(String search_key, int s_limit, String api){
+    public Iterator<SearchResult> YouTubeSearch(String search_key, int s_limit, String api)
+    {
         Iterator<SearchResult> searchResultIterator = null;
 
         YouTube youtube;
@@ -524,7 +531,8 @@ public class MusicCommandListener extends ListenerAdapter {
         return searchResultIterator;
     }
 
-    public void Leave(MessageReceivedEvent event){
+    public void Leave(MessageReceivedEvent event)
+    {
         /*
         * CLEARS QUEUE AND LEAVE VOICE CHANNEL
         * */
@@ -537,10 +545,12 @@ public class MusicCommandListener extends ListenerAdapter {
         voice_states.remove(event.getGuild().getId());
     }
 
-    public boolean Summon(MessageReceivedEvent event){
+    public boolean Summon(MessageReceivedEvent event)
+    {
         Member member = event.getMember();
         VoiceChannel voiceChannel = member.getVoiceState().getChannel();
-        if (voiceChannel == null){
+        if (voiceChannel == null)
+        {
             event.getChannel().sendMessage("Are you sure you're in voice channel ?").queue();
             return false;
         }
@@ -550,15 +560,18 @@ public class MusicCommandListener extends ListenerAdapter {
         return true;
     }
 
-    // AUTO LOAD AND PLAY
-    public void LoadAndPlay(MessageReceivedEvent event, String msg_content, String search_key){
+    // AUTO LOAD AND PLAY KEYWORDS
+    public void LoadAndPlay(MessageReceivedEvent event, String msg_content, String search_key)
+    {
 
         Member san = event.getGuild().getSelfMember();
         /*
          * IF SAN IS NOT IN VOICE CHANNEL
          */
-        if (!san.getVoiceState().inVoiceChannel()){
-            if (!Summon(event)){
+        if (!san.getVoiceState().inVoiceChannel())
+        {
+            if (!Summon(event))
+            {
                 return;
             }
         }

@@ -25,9 +25,11 @@ public class Bot extends ListenerAdapter {
 
     static JDA jda;
     //public static SanConfiguration CONFIG = new SanConfiguration();
-    public static String BOT_TOKEN = Tokens.BOT_TOKEN;
+    public static String BOT_TOKEN = "";
 
     public static void main(String args[]){
+        Tokens token = new Tokens();
+        BOT_TOKEN = token.BOT_TOKEN;
         try {
             jda = new JDABuilder(AccountType.BOT).setToken(BOT_TOKEN).buildBlocking();
             // jda.addEventListener(new Bot());
