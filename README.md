@@ -11,6 +11,7 @@ Music commands tht is used by <a href="https://github.com/MadeYoga/Nano-Bot">Nan
 ## Official Nano-bot
 Invite <a href="https://github.com/MadeYoga/Nano-Bot">Nano-Bot</a> to your server ^^
 
-Music commands tht is used by <a href="https://github.com/MadeYoga/Nano-Bot">Nano-Bot</a><br>
-<a href="https://discordapp.com/oauth2/authorize?client_id=458298539517411328&permissions=8&scope=bot">Invite</a> Nano bot to your server
-<br>
+## Support Nano-Bot
+- Support dev, report bugs...
+- I would really appreciate any ideas/suggestions/Contributions.
+Join [Nano Support Server](https://discord.gg/Y8sB4ay)
