@@ -1,6 +1,6 @@
 # Nano-Bot - Music
 ![Discord Badge](https://discordapp.com/api/guilds/458296099049046018/embed.png)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/MadeYoga/San/issues)
 [![Build Status](https://travis-ci.org/MadeYoga/San.png?branch=master)](https://travis-ci.org/MadeYoga/San)
 [![CodeFactor](https://www.codefactor.io/repository/github/madeyoga/san/badge)](https://www.codefactor.io/repository/github/madeyoga/san)
 
