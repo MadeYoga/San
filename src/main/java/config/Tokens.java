@@ -11,17 +11,19 @@ public class Tokens
     public Tokens()
     {
         Map<String, String> env = System.getenv();
-        if (!env.containsKey("YOUTUBE_DATA_API_KEY") || !env.containsKey("BOT_TOKEN"))
-        {
-//            Hidden hidden = new Hidden();
-//            this.YOUTUBE_DATA_API_KEY = hidden.YOUTUBE_DATA_API_KEY;
-//            this.BOT_TOKEN = hidden.BOT_TOKEN;
-        }
-        else
-        {
-            this.YOUTUBE_DATA_API_KEY = env.get("YOUTUBE_DATA_API_KEY");
-            this.BOT_TOKEN = env.get("BOT_TOKEN");
-        }
+        this.YOUTUBE_DATA_API_KEY = env.get("DEVELOPER_KEY");
+        this.BOT_TOKEN = env.get("BOT_TOKEN");
+//         if (!env.containsKey("YOUTUBE_DATA_API_KEY") || !env.containsKey("BOT_TOKEN"))
+//         {
+// //            Hidden hidden = new Hidden();
+// //            this.YOUTUBE_DATA_API_KEY = hidden.YOUTUBE_DATA_API_KEY;
+// //            this.BOT_TOKEN = hidden.BOT_TOKEN;
+//         }
+//         else
+//         {
+//             this.YOUTUBE_DATA_API_KEY = env.get("YOUTUBE_DATA_API_KEY");
+//             this.BOT_TOKEN = env.get("BOT_TOKEN");
+//         }
     }
 
 }
