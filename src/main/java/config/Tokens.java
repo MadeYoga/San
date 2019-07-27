@@ -11,7 +11,7 @@ public class Tokens
     public Tokens()
     {
         Map<String, String> env = System.getenv();
-        this.YOUTUBE_DATA_API_KEY = env.get("DEVELOPER_KEY");
+        this.YOUTUBE_DATA_API_KEY = env.get("YOUTUBE_DATA_API_KEY");
         this.BOT_TOKEN = env.get("BOT_TOKEN");
 //         if (!env.containsKey("YOUTUBE_DATA_API_KEY") || !env.containsKey("BOT_TOKEN"))
 //         {
